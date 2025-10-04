@@ -5,6 +5,9 @@
 #include <string>
 #include <fstream>
 
+#include "keyboard.hpp"
+#include "terminal.hpp"
+
 #pragma once
 
 #define CTRL_KEY(k) ((k) & 0x1f)
@@ -21,7 +24,7 @@ class Editor {
     public:
     Editor(const std::string& fname) : filename(fname) {
         tcgetattr(STDIN_FILENO, &orig_termios);
-        enableRawMode();
+        enableRawMode(orig_termios);
         ifstream in(filename);
         if (in) {
             std::string line;
@@ -35,21 +38,10 @@ class Editor {
     }
 
     ~Editor() {
-        disableRawMode();
+        disableRawMode(orig_termios);
     }
 
-    void enableRawMode() {
-        struct termios raw = orig_termios;
-        raw.c_lflag &= ~(ICANON | ECHO);
-        raw.c_iflag &= ~(IXON);  // <--- disable Ctrl-S / Ctrl-Q flow control
-        raw.c_cc[VMIN] = 1;
-        raw.c_cc[VTIME] = 0;
-        tcsetattr(STDIN_FILENO, TCSAFLUSH, &raw);
-    }
 
-    void disableRawMode() {
-        tcsetattr(STDIN_FILENO, TCSAFLUSH, &orig_termios);
-    }
 
     void saveToFile(){
         ofstream out(filename);
@@ -58,33 +50,12 @@ class Editor {
         }
         out.close();
     }
-
-    char readKey() {
-        char c;
-        if (read(STDIN_FILENO, &c, 1) != 1) return 0;
-
-        if (c == 27) { // Escape sequence
-            char seq[2];
-            if (read(STDIN_FILENO, &seq[0], 1) != 1) return 27;
-            if (read(STDIN_FILENO, &seq[1], 1) != 1) return 27;
-
-            if (seq[0] == '[') {
-                switch (seq[1]) {
-                    case 'A': return 'U'; // Up
-                    case 'B': return 'D'; // Down
-                    case 'C': return 'R'; // Right
-                    case 'D': return 'L'; // Left
-                    default: return '?';
-                }
-            }
-        }
-        return c;
-    }
+    
 
     void processKey(char key) {
         switch (key) {
             case CTRL_KEY('q'): // quit
-                disableRawMode();
+                disableRawMode(orig_termios);
                 exit(0);
 
             case 'U': // up
