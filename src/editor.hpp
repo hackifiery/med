@@ -123,7 +123,7 @@ class Editor {
     void refreshScreen() {
         cout << "\033[H\033[J"; // clear screen
         if (saved){
-            cout << "med build " << git_hash <<", editing " << filename << " (saved)"<< endl;
+            cout << "med (build " << git_hash <<"), editing " << filename << " (saved)"<< endl;
         }
         else {
             cout << "med build " << git_hash <<", editing " << filename << " (not saved)" << endl;
