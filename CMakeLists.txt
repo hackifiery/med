@@ -10,4 +10,5 @@ add_compile_options(-Wall -Wextra -pedantic -g)
 file(GLOB SOURCES "src/*.cpp")
 
 add_executable(med ${SOURCES})
+install(TARGETS med RUNTIME DESTINATION bin)
 
