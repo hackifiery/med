@@ -4,6 +4,7 @@
 #include <vector>
 #include <string>
 #include <fstream>
+#include <filesystem>
 
 #include "keyboard.hpp"
 #include "terminal.hpp"
@@ -15,6 +16,8 @@
 using namespace std;
 
 class Editor {
+    bool saved = false;
+    string git_hash = GIT_COMMIT_HASH;
     struct termios orig_termios;
     vector<string> buffer;
     int cx = 0, cy = 0; // cursor x and y positions
@@ -23,6 +26,9 @@ class Editor {
 
     public:
     Editor(const std::string& fname) : filename(fname) {
+        if (filesystem::exists(filename)){
+            saved = true;
+        }
         tcgetattr(STDIN_FILENO, &orig_termios);
         enableRawMode(orig_termios);
         ifstream in(filename);
@@ -44,6 +50,7 @@ class Editor {
 
 
     void saveToFile(){
+        saved = true;
         ofstream out(filename);
         for (string line : buffer){
             out << line << endl;
@@ -92,6 +99,7 @@ class Editor {
                 break;
 
             case '\n': // new line
+                saved = false;
                 buffer.insert(buffer.begin() + cy + 1, buffer[cy].substr(cx));
                 buffer[cy] = buffer[cy].substr(0, cx);
                 cy++;
@@ -104,6 +112,7 @@ class Editor {
 
             default: // normal char
                 if (key >= 32 && key <= 126) {
+                    saved = false;
                     buffer[cy].insert(cx, 1, key);
                     cx++;
                 }
@@ -113,11 +122,17 @@ class Editor {
 
     void refreshScreen() {
         cout << "\033[H\033[J"; // clear screen
+        if (saved){
+            cout << "med build " << git_hash <<", editing " << filename << " (saved)"<< endl;
+        }
+        else {
+            cout << "med build " << git_hash <<", editing " << filename << " (not saved)" << endl;
+        }
         for (size_t i = 0; i < buffer.size(); i++) {
             cout << buffer[i] << "\r\n";
         }
         // move cursor
-        cout << "\033[" << cy + 1 << ";" << cx + 1 << "H";
+        cout << "\033[" << cy + 2 << ";" << cx + 1 << "H";
         cout.flush();
     }
 
