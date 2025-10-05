@@ -61,7 +61,7 @@ test.txt
 /aclocal.m4
 /autom4te.cache/
 /config.*
-/configure
+# /configure
 /depcomp
 /install-sh
 /libtool
