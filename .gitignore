@@ -54,6 +54,7 @@ test.txt
 *.so
 *.dll
 *.dylib
+*.idx
 
 # CMake build directory
 /build/
