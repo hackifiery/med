@@ -45,6 +45,7 @@ class Editor {
 
     ~Editor() {
         disableRawMode(orig_termios);
+        cout << endl;
     }
 
 
@@ -63,6 +64,7 @@ class Editor {
         switch (key) {
             case CTRL_KEY('q'): // quit
                 disableRawMode(orig_termios);
+                cout << endl;
                 exit(0);
 
             case 'U': // up
