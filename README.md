@@ -19,3 +19,8 @@ cmake --install ./build
 ``````
 as root, and it will install to `/usr/local/bin/`.
 
+# usage
+``````
+med [filename
+``````
+Once in the editor, type ctrl-s to save, ctrl-q to quit.
