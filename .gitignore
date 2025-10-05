@@ -55,20 +55,12 @@ test.txt
 *.dll
 *.dylib
 
-#autoconf stuff
-/Makefile
-# /Makefile.in
-# /aclocal.m4
-/autom4te.cache/
-/config.log
-/config.status
-/config.h
-# /configure
-# /depcomp
-# /missing
-/stamp-h?
-.deps/
-.dirstamp
-.libs/
-*.l[ao]
-*~
+# CMake build directory
+/build/
+CMakeCache.txt
+CMakeFiles/
+cmake_install.cmake
+Makefile
+
+/med
+
