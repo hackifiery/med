@@ -2,7 +2,8 @@
 A tiny text editor i wrote cuz others are too bloated imo. The final executable is <500kb so yea
 
 # get the code
-Clone this repo:
+Go to the releases page and download the latest one.
+For development (potentially unstable) versions, clone this repo:
 ```````
 git clone https://github.com/hackifiery/med
 ```````
