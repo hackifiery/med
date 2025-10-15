@@ -21,7 +21,7 @@ execute_process(
     OUTPUT_STRIP_TRAILING_WHITESPACE)
 
 execute_process(
-    COMMAND git describe --exact-match --tags
+    COMMAND git describe --tags
     WORKING_DIRECTORY ${CMAKE_SOURCE_DIR}
     OUTPUT_VARIABLE GIT_TAG
     OUTPUT_STRIP_TRAILING_WHITESPACE)
