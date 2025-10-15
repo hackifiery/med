@@ -25,7 +25,7 @@ class Editor {
     // ifstream out;
 
     public:
-    Editor(const std::string& fname) : filename(fname) {
+    Editor(const string& fname) : filename(fname) {
         if (filesystem::exists(filename)){
             saved = true;
         }
@@ -33,7 +33,7 @@ class Editor {
         enableRawMode(orig_termios);
         ifstream in(filename);
         if (in) {
-            std::string line;
+            string line;
             while (getline(in, line)) {
                 buffer.push_back(line);
             }
@@ -64,7 +64,7 @@ class Editor {
         switch (key) {
             case CTRL_KEY('q'): // quit
                 disableRawMode(orig_termios);
-                cout << endl;
+                cout << endl<<endl;
                 exit(0);
 
             case 'U': // up
