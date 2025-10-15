@@ -127,10 +127,10 @@ class Editor {
     void refreshScreen() {
         cout << "\033[H\033[J"; // clear screen
         if (saved){
-            cout << "med " << git_tag << " editing " << filename << " (saved)"<< endl;
+            cout << filename << " (saved)"<< endl;
         }
         else {
-            cout << "med "<< git_tag << " editing " << filename << " (not saved)" << endl;
+            cout << filename << " (not saved)" << endl;
         }
         for (size_t i = 0; i < buffer.size(); i++) {
             cout << buffer[i] << "\r\n";
