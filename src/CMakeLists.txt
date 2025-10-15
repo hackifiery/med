@@ -19,5 +19,10 @@ target_compile_options(${PROJECT_NAME} PRIVATE
 target_compile_definitions(${PROJECT_NAME} PRIVATE
     "-DGIT_COMMIT_HASH=\"${GIT_COMMIT_HASH}\""
 )
-
+target_compile_definitions(${PROJECT_NAME} PRIVATE
+    "-DGIT_BRANCH=\"${GIT_BRANCH}\""
+)
+target_compile_definitions(${PROJECT_NAME} PRIVATE
+    "-DGIT_TAG=\"${GIT_TAG}\""
+)
 install(TARGETS ${PROJECT_NAME} RUNTIME DESTINATION bin)

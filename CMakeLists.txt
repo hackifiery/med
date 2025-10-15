@@ -20,7 +20,15 @@ execute_process(
     OUTPUT_VARIABLE GIT_COMMIT_HASH
     OUTPUT_STRIP_TRAILING_WHITESPACE)
 
-# Set a cache variable to pass the hash to subdirectories
+execute_process(
+    COMMAND git describe --exact-match --tags
+    WORKING_DIRECTORY ${CMAKE_SOURCE_DIR}
+    OUTPUT_VARIABLE GIT_TAG
+    OUTPUT_STRIP_TRAILING_WHITESPACE)
+
+# Set vars for use in the build
+set(GIT_BRANCH ${GIT_BRANCH} CACHE INTERNAL "Current Git branch")
+set(GIT_TAG ${GIT_TAG} CACHE INTERNAL "Current Git tag")
 set(GIT_COMMIT_HASH ${GIT_COMMIT_HASH} CACHE INTERNAL "Current Git commit hash")
 # -----------------------------
 

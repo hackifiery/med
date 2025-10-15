@@ -18,6 +18,8 @@ using namespace std;
 class Editor {
     bool saved = false;
     string git_hash = GIT_COMMIT_HASH;
+    string git_branch = GIT_BRANCH;
+    string git_tag = GIT_TAG;
     struct termios orig_termios;
     vector<string> buffer;
     int cx = 0, cy = 0; // cursor x and y positions
@@ -125,10 +127,10 @@ class Editor {
     void refreshScreen() {
         cout << "\033[H\033[J"; // clear screen
         if (saved){
-            cout << "med (build " << git_hash <<"), editing " << filename << " (saved)"<< endl;
+            cout << "med " << git_tag << " (build " << git_hash <<"), editing " << filename << " (saved)"<< endl;
         }
         else {
-            cout << "med build " << git_hash <<", editing " << filename << " (not saved)" << endl;
+            cout << "med "<< git_tag << " (build " << git_hash <<"), editing " << filename << " (not saved)" << endl;
         }
         for (size_t i = 0; i < buffer.size(); i++) {
             cout << buffer[i] << "\r\n";
