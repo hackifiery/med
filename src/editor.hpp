@@ -50,7 +50,9 @@ class Editor {
 
     ~Editor() {
         disableRawMode(orig_termios);
-        cout << endl;
+        // system("clear");
+        exit(0);
+        // cout << endl;
     }
 
     void scroll() {
@@ -79,7 +81,7 @@ class Editor {
         switch (key) {
             case CTRL_KEY('q'): // quit
                 disableRawMode(orig_termios);
-                cout << endl<<endl;
+                system("clear");
                 exit(0);
 
             case 'U': // up
