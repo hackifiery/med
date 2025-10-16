@@ -123,24 +123,35 @@ class Editor {
                 break;
         }
     }
+void refreshScreen() {
+    cout << "\033[H\033[J"; // clear screen
 
-    void refreshScreen() {
-        cout << "\033[H\033[J"; // clear screen
-        if (saved){
-            cout << filename << " (saved)"<< endl;
-        }
-        else {
-            cout << filename << " (not saved)" << endl;
-        }
-        for (size_t i = 0; i < buffer.size(); i++) {
-            cout << buffer[i] << "\r\n";
-        }
-        // move cursor
-        cout << "\033[" << cy + 2 << ";" << cx + 1 << "H";
-        cout.flush();
+    // print file buffer
+    for (size_t i = 0; i < buffer.size(); i++) {
+        cout << buffer[i] << "\r\n";
     }
 
-    void run() {
+    // get terminal size
+    int rows, cols;
+    getWindowSize(rows, cols);
+
+    // move to bottom line
+    cout << "\033[" << rows << ";1H";  // move cursor to last line
+    cout << "\033[K";                  // clear the line
+
+    // print status info
+    cout << filename;
+    if (saved)
+        cout << " (saved)";
+    else
+        cout << " (not saved)";
+
+    // move cursor back to editing position (offset +1 for header line)
+    cout << "\033[" << cy + 1 << ";" << cx + 1 << "H";
+    cout.flush();
+}
+
+void run() {
         while (true) {
             refreshScreen();
             char key = readKey();
