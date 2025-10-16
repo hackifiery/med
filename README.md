@@ -25,3 +25,7 @@ as root, and it will install to `/usr/local/bin/`.
 med [filename]
 ``````
 Once in the editor, type ctrl-s to save, ctrl-q to quit.
+# TODO
+* Scrolling
+* Display row/column
+* Line numbering (?)
