@@ -147,7 +147,7 @@ class Editor {
             
             case 'e': // ctrl+end
                 cx = buffer.back().length();
-                cy = buffer.size();
+                cy = buffer.size()-1;
                 break;
 
             case CTRL_KEY('s'):
