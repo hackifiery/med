@@ -131,7 +131,25 @@ class Editor {
                 cy++;
                 cx = 0; 
                 break;
+
+            case 'H': // home key
+                cx = 0;
+                break;
             
+            case 'h': // ctrl+home
+                cx = 0;
+                cy = 0;
+                break;
+            
+            case 'E': // end key
+                cx = buffer[cy].length();
+                break;
+            
+            case 'e': // ctrl+end
+                cx = buffer.back().length();
+                cy = buffer.size()-1;
+                break;
+
             case CTRL_KEY('s'):
                 saveToFile();
                 break;
@@ -145,53 +163,53 @@ class Editor {
                 break;
         }
     }
-void refreshScreen() {
-    scroll();
-    cout << "\033[H\033[J"; // clear screen
-    int lines_to_draw = rows - 1; // leave last line for status
-    // print file buffer, starting from the row_offset
-    for (int i = 0; i < lines_to_draw; i++) {
-        int file_row = row_offset + i;
-        
-        if (file_row < (int)buffer.size()) {
-            cout << buffer[file_row];
-        } else if (file_row == (int)buffer.size()) {
-            // Print a tilde for lines past the end of the file, common in terminal editors
-            cout << "~"; 
+    void refreshScreen() {
+        scroll();
+        cout << "\033[H\033[J"; // clear screen
+        int lines_to_draw = rows - 1; // leave last line for status
+        // print file buffer, starting from the row_offset
+        for (int i = 0; i < lines_to_draw; i++) {
+            int file_row = row_offset + i;
+            
+            if (file_row < (int)buffer.size()) {
+                cout << buffer[file_row];
+            } else if (file_row == (int)buffer.size()) {
+                // Print a tilde for lines past the end of the file, common in terminal editors
+                cout << "~"; 
+            }
+
+            cout << "\033[K"; // clear rest of the line
+            cout << "\r\n";
         }
 
-        cout << "\033[K"; // clear rest of the line
-        cout << "\r\n";
+        // move to status line
+        cout << "\033[" << rows << ";1H";  // move cursor to last line
+        cout << "\033[K";                  // clear the line
+
+        // print status info
+        cout << filename;
+        if (saved){
+            cout << " (saved)";
+        }
+        else{
+            cout << " (not saved)";
+        }
+        // print cursor/buffer position
+        cout << " | L:" << cy + 1 << ", C:" << cx + 1;
+        
+
+        // move cursor back to editing position
+        // The visual Y position is 'cy' minus the 'row_offset', plus 1 (for 1-based indexing)
+        int screen_cy = cy - row_offset + 1;
+        cout << "\033[" << screen_cy << ";" << cx + 1 << "H";
+        cout.flush();
     }
 
-    // move to status line
-    cout << "\033[" << rows << ";1H";  // move cursor to last line
-    cout << "\033[K";                  // clear the line
-
-    // print status info
-    cout << filename;
-    if (saved){
-        cout << " (saved)";
-    }
-    else{
-        cout << " (not saved)";
-    }
-    // print cursor/buffer position
-    cout << " | L:" << cy + 1 << ", C:" << cx + 1;
-    
-
-    // move cursor back to editing position
-    // The visual Y position is 'cy' minus the 'row_offset', plus 1 (for 1-based indexing)
-    int screen_cy = cy - row_offset + 1;
-    cout << "\033[" << screen_cy << ";" << cx + 1 << "H";
-    cout.flush();
-    }
-
-void run() {
-        while (true) {
-            refreshScreen();
-            char key = readKey();
-            processKey(key);
+    void run() {
+            while (true) {
+                refreshScreen();
+                char key = readKey();
+                processKey(key);
         }
     }
 };
