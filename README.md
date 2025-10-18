@@ -3,7 +3,7 @@ A tiny text editor i wrote cuz others are too bloated imo.
 ## Features:
 * Mostly functional, can edit text (obviously)
 * Very lightweight, ~500kb
-* ncurses-free
+* `ncurses`-free
 
 # Get the code
 Go to the releases page and download the latest one.
@@ -37,5 +37,5 @@ Once in the editor, type ctrl-s to save, ctrl-q to quit.
 * [done] Home/End key support
 * Display percentage
 * Highlight titlebar
-* Preserve shell after close (don't use system("clear"))
+* Preserve shell after close (don't use `system("clear")`)
 * Line numbering
