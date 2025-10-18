@@ -30,6 +30,7 @@ class Editor {
 
     public:
     Editor(const string& fname) : filename(fname) {
+	system("clear");
         getWindowSize(rows, cols);
         if (filesystem::exists(filename)){
             saved = true;

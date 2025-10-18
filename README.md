@@ -1,5 +1,9 @@
 # med (Minimal text EDitor) -- a very tiny text editor written in c++
-A tiny text editor i wrote cuz others are too bloated imo. The final executable is <500kb so yea
+A tiny text editor i wrote cuz others are too bloated imo.
+## Features:
+* Mostly functional, can edit text (obviously)
+* Very lightweight, ~500kb
+* ncurses-free
 
 # get the code
 Go to the releases page and download the latest one.
@@ -22,10 +26,15 @@ as root, and it will install to `/usr/local/bin/`.
 
 # usage
 ``````
-med [filename]
+med [options] [filename]
 ``````
+--version/-v: display the current version
+
 Once in the editor, type ctrl-s to save, ctrl-q to quit.
 # TODO
-* Scrolling
-* Display row/column
-* Line numbering (?)
+* [done] Scrolling
+* [done] Display row/column
+* Display percentage
+* Highlight titlebar
+* Preserve shell after close (don't use system("clear"))
+* Line numbering
