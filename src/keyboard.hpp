@@ -1,3 +1,4 @@
+#include <utility>
 #pragma once
 
-char readKey();
+std::pair<bool, char> readKey();

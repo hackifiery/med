@@ -78,34 +78,25 @@ class Editor {
     }
     
 
-    void processKey(char key) {
-        switch (key) {
+    void processKey(char key, bool esc) {
+        switch (key){
+            case CTRL_KEY('s'):
+                saveToFile();
+                break;
             case CTRL_KEY('q'): // quit
                 disableRawMode(orig_termios);
                 system("clear");
                 exit(0);
+            case '\n': // new line
+                saved = false;
+                // Check for empty buffer which can happen if you load an empty file
+                if (buffer.empty()) buffer.push_back("");
 
-            case 'U': // up
-                if (cy > 0) cy--;
+                buffer.insert(buffer.begin() + cy + 1, buffer[cy].substr(cx));
+                buffer[cy] = buffer[cy].substr(0, cx);
+                cy++;
+                cx = 0; 
                 break;
-
-            case 'D': // down
-                if (cy < (int)buffer.size() - 1) {
-                    if (cx > (int)buffer[cy+1].size()){
-                        cx = (int)buffer[cy+1].size();
-                    }
-                    cy++;
-                }
-                break;
-
-            case 'L': // left
-                if (cx > 0) cx--;
-                break;
-
-            case 'R': // right
-                if (cx < (int)buffer[cy].size()) cx++;
-                break;
-
             case 127: // backspace
                 if (cx > 0) {
                     buffer[cy].erase(cx - 1, 1);
@@ -121,47 +112,60 @@ class Editor {
                     buffer[cy] += current_line; // Now append
                 }
                 break;
+        }
+        if (esc){
+            switch (key) {
+                case 'U': // up
+                    if (cy > 0){
+                        if (cx > (int)buffer[cy-1].size()){
+                            cx = (int)buffer[cy-1].size();
+                        }
+                        cy--;
+                    }
+                    break;
 
-            case '\n': // new line
+                case 'D': // down
+                    if (cy < (int)buffer.size() - 1) {
+                        if (cx > (int)buffer[cy+1].size()){
+                            cx = (int)buffer[cy+1].size();
+                        }
+                        cy++;
+                    }
+                    break;
+
+                case 'L': // left
+                    if (cx > 0) cx--;
+                    break;
+
+                case 'R': // right
+                    if (cx < (int)buffer[cy].size()) cx++;
+                    break;
+
+                case 'H': // home key
+                    cx = 0;
+                    break;
+                
+                case 'h': // ctrl+home
+                    cx = 0;
+                    cy = 0;
+                    break;
+                
+                case 'E': // end key
+                    cx = buffer[cy].length();
+                    break;
+                
+                case 'e': // ctrl+end
+                    cx = buffer.back().length();
+                    cy = buffer.size()-1;
+                    break;
+            }
+        }
+        else{
+            if (key >= 32 && key <= 126) {
                 saved = false;
-                // Check for empty buffer which can happen if you load an empty file
-                if (buffer.empty()) buffer.push_back("");
-
-                buffer.insert(buffer.begin() + cy + 1, buffer[cy].substr(cx));
-                buffer[cy] = buffer[cy].substr(0, cx);
-                cy++;
-                cx = 0; 
-                break;
-
-            case 'H': // home key
-                cx = 0;
-                break;
-            
-            case 'h': // ctrl+home
-                cx = 0;
-                cy = 0;
-                break;
-            
-            case 'E': // end key
-                cx = buffer[cy].length();
-                break;
-            
-            case 'e': // ctrl+end
-                cx = buffer.back().length();
-                cy = buffer.size()-1;
-                break;
-
-            case CTRL_KEY('s'):
-                saveToFile();
-                break;
-
-            default: // normal char
-                if (key >= 32 && key <= 126) {
-                    saved = false;
-                    buffer[cy].insert(cx, 1, key);
-                    cx++;
-                }
-                break;
+                buffer[cy].insert(cx, 1, key);
+                cx++;
+            }
         }
     }
     void refreshScreen() {
@@ -209,8 +213,10 @@ class Editor {
     void run() {
             while (true) {
                 refreshScreen();
-                char key = readKey();
-                processKey(key);
+                pair<bool, char> rkey = readKey();
+                bool esc = rkey.first;
+                char key = rkey.second;
+                processKey(key, esc);
         }
     }
 };
