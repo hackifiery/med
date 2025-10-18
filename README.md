@@ -31,6 +31,14 @@ med [options] [filename]
 --version/-v: display the current version
 
 Once in the editor, type ctrl-s to save, ctrl-q to quit.
+
+# Known issues
+
+med is still buggy, so there are some problems that you may encounter:
+
+* No horizontal scrolling
+* Downloads from the release page do not display version correctly; building encounters non-fatal git errors (will be fixed in the next update)
+
 # TODO
 * [done] Scrolling
 * [done] Display row/column
