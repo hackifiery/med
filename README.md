@@ -5,14 +5,14 @@ A tiny text editor i wrote cuz others are too bloated imo.
 * Very lightweight, ~500kb
 * ncurses-free
 
-# get the code
+# Get the code
 Go to the releases page and download the latest one.
 For development (potentially unstable) versions, clone this repo:
 ```````
 git clone https://github.com/hackifiery/med
 ```````
 
-# build/install
+# Build/install
 med uses CMake, so to build it, just do
 ``````
 cmake -B build -S .
@@ -24,7 +24,7 @@ cmake --install build
 ``````
 as root, and it will install to `/usr/local/bin/`.
 
-# usage
+# Usage
 ``````
 med [options] [filename]
 ``````
@@ -34,6 +34,7 @@ Once in the editor, type ctrl-s to save, ctrl-q to quit.
 # TODO
 * [done] Scrolling
 * [done] Display row/column
+* [done] Home/End key support
 * Display percentage
 * Highlight titlebar
 * Preserve shell after close (don't use system("clear"))
