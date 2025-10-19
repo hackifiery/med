@@ -15,9 +15,9 @@ set(GIT_VERSION_STRING "${PROJECT_VERSION}-unknown")
 set(PROJECT_VERSION_STRING_FINAL "${PROJECT_VERSION}-unknown")
 
 if (GIT_FOUND)
-    message(STATUS "Git Found.")
+    # message(STATUS "Git Found.")
     # Fix: Always quote variables in message()
-    message(STATUS "Git Executable: \"${GIT_EXECUTABLE}\"")
+    # message(STATUS "Git Executable: \"${GIT_EXECUTABLE}\"")
 
     # Use a robust git describe command with --always to get the hash if no tags exist
     execute_process(
@@ -36,7 +36,7 @@ if (GIT_FOUND)
     set(PROJECT_VERSION_STRING_FINAL "${GIT_VERSION_STRING}")
     
     # Message the final version used
-    message(STATUS "Final Version String set to: ${GIT_VERSION_STRING}")
+    # message(STATUS "Final Version String set to: ${GIT_VERSION_STRING}")
 
 else()
     message(STATUS "Git not found. Using default version: ${GIT_VERSION_STRING}")
