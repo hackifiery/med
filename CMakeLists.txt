@@ -31,15 +31,6 @@ if (GIT_FOUND)
     if (GIT_RESULT_CODE EQUAL 0)
         # Success: Set the final variable
         set(GIT_VERSION_STRING "${GIT_VERSION_STRING_TEMP}")
-    else()
-        # Failure: The most common failure is no commits/no .git folder contents.
-        # Check if the temporary output contains a useful error message to log
-        if(GIT_VERSION_STRING_TEMP)
-            message(WARNING "Git describe failed (Exit code ${GIT_RESULT_CODE}). Output: ${GIT_VERSION_STRING_TEMP}. Defaulting version.")
-        else()
-            message(WARNING "Git describe failed (Exit code ${GIT_RESULT_CODE}). Defaulting version.")
-        endif()
-        # GIT_VERSION_STRING retains the default value: "${PROJECT_VERSION}-unknown"
     endif()
     set(PROJECT_VERSION_STRING_FINAL "${GIT_VERSION_STRING}")
     
