@@ -17,7 +17,9 @@ using namespace std;
 
 class Editor {
     bool saved = false;
-    string git_tag;
+    string git_hash = GIT_COMMIT_HASH;
+    string git_branch = GIT_BRANCH;
+    string git_tag = GIT_TAG;
     int rows, cols;
     struct termios orig_termios;
     vector<string> buffer;
@@ -28,7 +30,7 @@ class Editor {
 
     public:
     Editor(const string& fname) : filename(fname) {
-        system("clear");
+	system("clear");
         getWindowSize(rows, cols);
         if (filesystem::exists(filename)){
             saved = true;
