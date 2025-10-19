@@ -1,36 +1,55 @@
 cmake_minimum_required(VERSION 3.10)
 
-project(med VERSION 0.1 LANGUAGES CXX)
+project(med VERSION 0.3 LANGUAGES CXX)
 
 set(CMAKE_CXX_STANDARD 17)
 set(CMAKE_CXX_STANDARD_REQUIRED True)
 set(CMAKE_LIBRARY_OUTPUT_DIRECTORY ${CMAKE_BINARY_DIR}/lib)
 set(CMAKE_RUNTIME_OUTPUT_DIRECTORY ${CMAKE_BINARY_DIR}/bin)
+find_package(Git QUIET)
 
-# --- Git Version Injection ---
-execute_process(
-    COMMAND git rev-parse --abbrev-ref HEAD
-    WORKING_DIRECTORY ${CMAKE_SOURCE_DIR}
-    OUTPUT_VARIABLE GIT_BRANCH
-    OUTPUT_STRIP_TRAILING_WHITESPACE)
+# --- Initialize Default Version ---
+# This ensures GIT_VERSION_STRING is always defined, even if Git is not found.
+set(GIT_VERSION_STRING "${PROJECT_VERSION}-unknown")
+set(PROJECT_VERSION_STRING_FINAL "${PROJECT_VERSION}-unknown")
 
-execute_process(
-    COMMAND git rev-parse --short HEAD
-    WORKING_DIRECTORY ${CMAKE_SOURCE_DIR}
-    OUTPUT_VARIABLE GIT_COMMIT_HASH
-    OUTPUT_STRIP_TRAILING_WHITESPACE)
+if (GIT_FOUND)
+    message(STATUS "Git Found.")
+    # Fix: Always quote variables in message()
+    message(STATUS "Git Executable: \"${GIT_EXECUTABLE}\"")
 
-execute_process(
-    COMMAND git describe --tags
-    WORKING_DIRECTORY ${CMAKE_SOURCE_DIR}
-    OUTPUT_VARIABLE GIT_TAG
-    OUTPUT_STRIP_TRAILING_WHITESPACE)
+    # Use a robust git describe command with --always to get the hash if no tags exist
+    execute_process(
+        COMMAND ${GIT_EXECUTABLE} describe --tags --always --abbrev=7 --dirty=-dirty
+        WORKING_DIRECTORY ${CMAKE_SOURCE_DIR}
+        OUTPUT_VARIABLE GIT_VERSION_STRING_TEMP # Use a temporary variable for output
+        OUTPUT_STRIP_TRAILING_WHITESPACE
+        RESULT_VARIABLE GIT_RESULT_CODE         # Variable to hold exit code (0=success)
+    )
 
-# Set vars for use in the build
-set(GIT_BRANCH ${GIT_BRANCH} CACHE INTERNAL "Current Git branch")
-set(GIT_TAG ${GIT_TAG} CACHE INTERNAL "Current Git tag")
-set(GIT_COMMIT_HASH ${GIT_COMMIT_HASH} CACHE INTERNAL "Current Git commit hash")
-# -----------------------------
+    # Check the result code of the Git command
+    if (GIT_RESULT_CODE EQUAL 0)
+        # Success: Set the final variable
+        set(GIT_VERSION_STRING "${GIT_VERSION_STRING_TEMP}")
+    else()
+        # Failure: The most common failure is no commits/no .git folder contents.
+        # Check if the temporary output contains a useful error message to log
+        if(GIT_VERSION_STRING_TEMP)
+            message(WARNING "Git describe failed (Exit code ${GIT_RESULT_CODE}). Output: ${GIT_VERSION_STRING_TEMP}. Defaulting version.")
+        else()
+            message(WARNING "Git describe failed (Exit code ${GIT_RESULT_CODE}). Defaulting version.")
+        endif()
+        # GIT_VERSION_STRING retains the default value: "${PROJECT_VERSION}-unknown"
+    endif()
+    set(PROJECT_VERSION_STRING_FINAL "${GIT_VERSION_STRING}")
+    
+    # Message the final version used
+    message(STATUS "Final Version String set to: ${GIT_VERSION_STRING}")
 
-# Add the source subdirectory to be configured
+else()
+    message(STATUS "Git not found. Using default version: ${GIT_VERSION_STRING}")
+    message(STATUS "No Git repository found. Using static version or archive version.")
+endif()
+
+# Add the source subdirectory. GIT_VERSION_STRING is now available to it.
 add_subdirectory(src)
