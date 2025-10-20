@@ -30,7 +30,7 @@ med [options] [filename]
 ``````
 --version/-v: display the current version
 
-Once in the editor, type ctrl-s to save, ctrl-q to quit.
+Once in the editor, type ctrl-s to save, ctrl-x to quit.
 
 # Known issues
 

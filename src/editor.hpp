@@ -81,7 +81,7 @@ class Editor {
             case CTRL_KEY('s'):
                 saveToFile();
                 break;
-            case CTRL_KEY('q'): // quit
+            case CTRL_KEY('x'): // quit
                 disableRawMode(orig_termios);
                 system("clear");
                 exit(0);
