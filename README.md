@@ -37,13 +37,14 @@ Once in the editor, type ctrl-s to save, ctrl-q to quit.
 med is still buggy, so there are some problems that you may encounter:
 
 * No horizontal scrolling
-* Downloads from the release page do not display version correctly; building encounters non-fatal git errors (will be fixed in the next update)
+* [partially fixed] Downloads from the release page do not display version correctly; building encounters non-fatal git errors
+* Shell is not preserved after close
 
 # TODO
-* [done] Scrolling
-* [done] Display row/column
-* [done] Home/End key support
+* ~~[done] Scrolling~~
+* ~~[done] Display row/column~~
+* ~~[done] Home/End key support~~
 * Display percentage
 * Highlight titlebar
-* Preserve shell after close (don't use `system("clear")`)
 * Line numbering
+* Fix bugs
