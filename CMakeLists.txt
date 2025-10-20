@@ -15,13 +15,8 @@ set(GIT_VERSION_STRING "${PROJECT_VERSION}-unknown")
 set(PROJECT_VERSION_STRING_FINAL "${PROJECT_VERSION}-unknown")
 
 if (GIT_FOUND)
-    # message(STATUS "Git Found.")
-    # Fix: Always quote variables in message()
-    # message(STATUS "Git Executable: \"${GIT_EXECUTABLE}\"")
-
-    # Use a robust git describe command with --always to get the hash if no tags exist
     execute_process(
-        COMMAND ${GIT_EXECUTABLE} describe --tags --always --abbrev=7 --dirty=-dirty
+        COMMAND ${GIT_EXECUTABLE} describe --tags
         WORKING_DIRECTORY ${CMAKE_SOURCE_DIR}
         OUTPUT_VARIABLE GIT_VERSION_STRING_TEMP # Use a temporary variable for output
         OUTPUT_STRIP_TRAILING_WHITESPACE
@@ -34,14 +29,10 @@ if (GIT_FOUND)
         set(GIT_VERSION_STRING "${GIT_VERSION_STRING_TEMP}")
     endif()
     set(PROJECT_VERSION_STRING_FINAL "${GIT_VERSION_STRING}")
-    
-    # Message the final version used
-    # message(STATUS "Final Version String set to: ${GIT_VERSION_STRING}")
 
 else()
     message(STATUS "Git not found. Using default version: ${GIT_VERSION_STRING}")
     message(STATUS "No Git repository found. Using static version or archive version.")
 endif()
 
-# Add the source subdirectory. GIT_VERSION_STRING is now available to it.
 add_subdirectory(src)
