@@ -31,7 +31,6 @@ pair<bool, char> readKey() {
                     case 'D': return make_pair(true, 'L'); // Left Arrow
                     // Note: Home/End are often sent as 3-byte sequences (ESC[H and ESC[F)
                     // but some terminals/configurations send them as simple 2-byte sequences
-                    // We'll keep these for simple Home/End, but see Case 2 for full Home/End.
                     case 'H': return make_pair(true, 'H'); // Simple Home
                     case 'F': return make_pair(true,'E'); // Simple End
                 }

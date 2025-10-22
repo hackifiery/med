@@ -23,6 +23,7 @@ class Editor {
     vector<string> buffer;
     int cx = 0, cy = 0; // cursor x and y positions
     int row_offset = 0;
+    int col_offset = 0;
     string filename;
     // ifstream out;
 
@@ -63,7 +64,13 @@ class Editor {
         if (cy >= row_offset + rows - 1) { 
             row_offset = cy - rows + 2; // +2 to keep the cursor one line above the status bar
         }
-        // TODO: horizontal scrolling
+        if (cx < col_offset) {
+            col_offset = cx;
+        }
+        // Use cols-1 because the last column is for the cursor position
+        if (cx >= col_offset + cols) {
+            col_offset = cx - cols + 1;
+        }
     }
 
     void saveToFile(){
@@ -77,6 +84,12 @@ class Editor {
     
 
     void processKey(char key, bool esc) {
+        if ((long unsigned int) /* prevent comparison warning */ cy < buffer.size()) {
+            size_t line_len = buffer[cy].length();
+            if (cx > (int)line_len) {
+                cx = (int)line_len;
+            }
+        }
         switch (key){
             case CTRL_KEY('s'):
                 saveToFile();
@@ -87,7 +100,6 @@ class Editor {
                 exit(0);
             case '\n': // new line
                 saved = false;
-                // Check for empty buffer which can happen if you load an empty file
                 if (buffer.empty()) buffer.push_back("");
 
                 buffer.insert(buffer.begin() + cy + 1, buffer[cy].substr(cx));
@@ -170,14 +182,28 @@ class Editor {
         scroll();
         cout << "\033[H\033[J"; // clear screen
         int lines_to_draw = rows - 1; // leave last line for status
+        
         // print file buffer, starting from the row_offset
         for (int i = 0; i < lines_to_draw; i++) {
             int file_row = row_offset + i;
             
             if (file_row < (int)buffer.size()) {
-                cout << buffer[file_row];
+                const string& line = buffer[file_row];
+                
+                // Print only the visible part of the line
+                if ((int)line.length() > col_offset) {
+                    // Substring starts at col_offset
+                    string visible_part = line.substr(col_offset);
+                    
+                    // Truncate to the screen width if it's too long
+                    if ((int)visible_part.length() > cols) {
+                        visible_part = visible_part.substr(0, cols);
+                    }
+                    cout << visible_part;
+                }
+                
             } else if (file_row == (int)buffer.size()) {
-                // Print a tilde for lines past the end of the file, common in terminal editors
+                // Print a tilde for lines past the end of the file
                 cout << "~"; 
             }
 
@@ -198,13 +224,14 @@ class Editor {
             cout << " (not saved)";
         }
         // print cursor/buffer position
-        cout << " | L:" << cy + 1 << ", C:" << cx + 1;
+        cout << " | L:" << cy + 1 << ", C:" << cx + 1; // DEBUG: << " | Scrl:" << col_offset;
         
 
         // move cursor back to editing position
-        // The visual Y position is 'cy' minus the 'row_offset', plus 1 (for 1-based indexing)
+        // The screen X position is 'cx' minus the 'col_offset', plus 1 (for 1-based indexing)
         int screen_cy = cy - row_offset + 1;
-        cout << "\033[" << screen_cy << ";" << cx + 1 << "H";
+        int screen_cx = cx - col_offset + 1;
+        cout << "\033[" << screen_cy << ";" << screen_cx << "H";
         cout.flush();
     }
 
