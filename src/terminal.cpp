@@ -1,3 +1,4 @@
+#include <iostream>
 #include <termios.h>
 #include <unistd.h>
 #include <sys/ioctl.h>
@@ -28,4 +29,14 @@ pair<int, int> getWindowSize(int &rows, int &cols) {
         cols = ws.ws_col;
     }
     return make_pair(rows, cols);
+}
+
+void clearScreen(){
+    cout << "\033[?1049h";
+    cout.flush();
+}
+
+void restoreScreen(){
+    cout << "\033[?1049l";
+    cout.flush();
 }
