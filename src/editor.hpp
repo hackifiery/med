@@ -6,6 +6,7 @@
 #include <string>
 #include <fstream>
 #include <filesystem>
+#include <cmath>
 
 #include "keyboard.hpp"
 #include "terminal.hpp"
@@ -21,11 +22,15 @@ class Editor {
     string git_tag;
     int rows, cols;
     struct termios orig_termios;
+    pair <int, int> screen_dimensions;
     vector<string> buffer;
     int cx = 0, cy = 0; // cursor x and y positions
     int row_offset = 0;
     int col_offset = 0;
+    int lines = 0;
     string filename;
+    double line_percent;
+    ifstream in;
     // ifstream out;
 
     public:
@@ -33,7 +38,9 @@ class Editor {
         if (filesystem::exists(filename)){
             saved = true;
         }
-        getWindowSize(rows, cols);
+        screen_dimensions = getWindowSize();
+        rows = screen_dimensions.first;
+        cols = screen_dimensions.second;
         tcgetattr(STDIN_FILENO, &orig_termios);
         enableRawMode(orig_termios);
         clearScreen();
@@ -179,6 +186,12 @@ class Editor {
         }
     }
     void refreshScreen() {
+        string line;
+        lines = buffer.size();
+        while (getline(in, line)) {
+            lines++;
+        }
+        line_percent = round((100.0 * (cy + 1)) / lines);
         scroll();
         cout << "\033[H\033[J"; // clear screen
         int lines_to_draw = rows - 1; // leave last line for status
@@ -224,7 +237,16 @@ class Editor {
             cout << " (not saved)";
         }
         // print cursor/buffer position
-        cout << " | L:" << cy + 1 << ", C:" << cx + 1; // DEBUG: << " | Scrl:" << col_offset;
+        ostringstream status_right;
+        status_right << cy + 1 << "," << cx + 1 
+                    << " [" << line_percent << "%]";
+
+        string right_text = status_right.str();
+        int right_start_col = max(1, cols - (int)right_text.length() + 1);
+
+        // move cursor to the starting column and print
+        cout << "\033[" << right_start_col << "G" << right_text;
+
         
 
         // move cursor back to editing position

@@ -19,7 +19,8 @@ void enableRawMode(struct termios orig_termios) {
 void disableRawMode(struct termios orig_termios) {
     tcsetattr(STDIN_FILENO, TCSAFLUSH, &orig_termios);
 }
-pair<int, int> getWindowSize(int &rows, int &cols) {
+pair<int, int> getWindowSize() {
+    int rows, cols;
     struct winsize ws;
     if (ioctl(STDOUT_FILENO, TIOCGWINSZ, &ws) == -1 || ws.ws_col == 0) {
         rows = 24;
