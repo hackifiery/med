@@ -1,4 +1,5 @@
 #include <iostream>
+#include <ostream>
 #include <unistd.h>
 #include <termios.h>
 #include <vector>
@@ -29,13 +30,13 @@ class Editor {
 
     public:
     Editor(const string& fname) : filename(fname) {
-        system("clear");
-        getWindowSize(rows, cols);
         if (filesystem::exists(filename)){
             saved = true;
         }
+        getWindowSize(rows, cols);
         tcgetattr(STDIN_FILENO, &orig_termios);
         enableRawMode(orig_termios);
+        clearScreen();
         ifstream in(filename);
         if (in) {
             string line;
@@ -49,8 +50,8 @@ class Editor {
     }
 
     ~Editor() {
+        restoreScreen();
         disableRawMode(orig_termios);
-        // system("clear");
         exit(0);
         // cout << endl;
     }
@@ -95,9 +96,8 @@ class Editor {
                 saveToFile();
                 break;
             case CTRL_KEY('x'): // quit
-                disableRawMode(orig_termios);
-                system("clear");
-                exit(0);
+                delete this; // no, don't actually delete this line of code
+                return;
             case '\n': // new line
                 saved = false;
                 if (buffer.empty()) buffer.push_back("");
