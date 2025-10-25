@@ -224,37 +224,37 @@ class Editor {
             cout << "\r\n";
         }
 
-        // move to status line
-        cout << "\033[" << rows << ";1H";  // move cursor to last line
-        cout << "\033[K";                  // clear the line
+        // Move to status line and set color
+		cout << "\033[" << rows << ";1H\033[30;47m";
 
-        // print status info
-        cout << filename;
-        if (saved){
-            cout << " (saved)";
-        }
-        else{
-            cout << " (not saved)";
-        }
-        // print cursor/buffer position
-        ostringstream status_right;
-        status_right << cy + 1 << "," << cx + 1 
-                    << " [" << line_percent << "%]";
+		// Fill the entire line with spaces
+		for (int i = 0; i < cols; ++i) {
+		    cout << " ";
+		}
 
-        string right_text = status_right.str();
-        int right_start_col = max(1, cols - (int)right_text.length() + 1);
+		// Move back to start of line
+		cout << "\033[" << rows << ";1H";
 
-        // move cursor to the starting column and print
-        cout << "\033[" << right_start_col << "G" << right_text;
+		// Print left-aligned status
+		cout << filename << (saved ? " (saved)" : " (not saved)");
 
-        
+		// Prepare right-aligned status
+		ostringstream status_right;
+		status_right << cy + 1 << "," << cx + 1 << " [" << line_percent << "%]";
+		string right_text = status_right.str();
+		int right_start_col = max(1, cols - (int)right_text.length() + 1);
+		
+		// Move to right-aligned position and print
+		cout << "\033[" << rows << ";" << right_start_col << "H" << right_text;
 
-        // move cursor back to editing position
-        // The screen X position is 'cx' minus the 'col_offset', plus 1 (for 1-based indexing)
-        int screen_cy = cy - row_offset + 1;
-        int screen_cx = cx - col_offset + 1;
-        cout << "\033[" << screen_cy << ";" << screen_cx << "H";
-        cout.flush();
+		// Reset formatting
+		cout << "\033[0m";
+
+		// Move cursor back to editing position
+		int screen_cy = cy - row_offset + 1;
+		int screen_cx = cx - col_offset + 1;
+		cout << "\033[" << screen_cy << ";" << screen_cx << "H";
+		cout.flush();
     }
 
     void run() {
