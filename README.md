@@ -36,9 +36,9 @@ Once in the editor, type ctrl-s to save, ctrl-x to quit.
 
 med is still buggy, so there are some problems that you may encounter:
 
-* No horizontal scrolling
+* ~~[fixed] No horizontal scrolling~~
 * [partially fixed] Downloads from the release page do not display version correctly; building encounters non-fatal git errors
-* Shell is not preserved after close
+* ~~[fixed] Shell is not preserved after close~~
 
 # TODO
 * ~~[done] Scrolling~~
