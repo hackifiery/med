@@ -7,6 +7,7 @@
 #include <fstream>
 #include <filesystem>
 #include <cmath>
+#include <sstream>
 
 #include "keyboard.hpp"
 #include "terminal.hpp"
