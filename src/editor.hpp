@@ -187,11 +187,12 @@ class Editor {
         }
     }
     void refreshScreen() {
-        string line;
+        
         lines = buffer.size();
-        while (getline(in, line)) {
-            lines++;
-        }
+        line_percent = round((100.0 * (cy + 1)) / lines);
+
+        int line_num_width = std::to_string(lines).length();
+
         line_percent = round((100.0 * (cy + 1)) / lines);
         scroll();
         cout << "\033[H\033[J"; // clear screen
@@ -203,16 +204,17 @@ class Editor {
             
             if (file_row < (int)buffer.size()) {
                 const string& line = buffer[file_row];
-                
-                // Print only the visible part of the line
+                int lineno = file_row + 1;
+                // print padded line number + separator
+                cout << std::setw(line_num_width) << "\033[90m" << lineno << "\033[0m ";
+
+                // Print only visible part of text
                 if ((int)line.length() > col_offset) {
-                    // Substring starts at col_offset
                     string visible_part = line.substr(col_offset);
-                    
-                    // Truncate to the screen width if it's too long
-                    if ((int)visible_part.length() > cols) {
-                        visible_part = visible_part.substr(0, cols);
-                    }
+
+                    if ((int)visible_part.length() > cols - line_num_width - 3)
+                        visible_part = visible_part.substr(0, cols - line_num_width - 3);
+
                     cout << visible_part;
                 }
                 
@@ -252,9 +254,13 @@ class Editor {
 		cout << "\033[0m";
 
 		// Move cursor back to editing position
-		int screen_cy = cy - row_offset + 1;
-		int screen_cx = cx - col_offset + 1;
-		cout << "\033[" << screen_cy << ";" << screen_cx << "H";
+		// line_num_width = std::to_string(lines).length();
+        int gutter = line_num_width + 1; // width of "NNN "
+
+        int screen_cy = cy - row_offset + 1;
+        int screen_cx = (cx - col_offset) + gutter + 1;
+
+        cout << "\033[" << screen_cy << ";" << screen_cx << "H";
 		cout.flush();
     }
 

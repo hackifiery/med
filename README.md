@@ -44,7 +44,7 @@ med is still buggy, so there are some problems that you may encounter:
 * ~~[done] Scrolling~~
 * ~~[done] Display row/column~~
 * ~~[done] Home/End key support~~
-* ~~Display percentage~~
-* Highlight titlebar
-* Line numbering
+* ~~[done] Display percentage~~
+* ~~[done] Highlight titlebar~~
+* ~~[done]Line numbering~~
 * Fix bugs
