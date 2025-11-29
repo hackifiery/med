@@ -1,3 +1,8 @@
+/*
+* Copyright (c) 2025 hackifiery. All rights reserved.
+* All code licensed under the MIT License.
+*/
+
 #pragma once
 
 #include <utility>

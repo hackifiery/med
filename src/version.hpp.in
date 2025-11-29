@@ -1,3 +1,8 @@
+/*
+* Copyright (c) 2025 hackifiery. All rights reserved.
+* All code licensed under the MIT License.
+*/
+
 #pragma once
 #define PROJECT_VERSION_STRING_GIT "$Format:%(describe:tags=true)$"
 #define PROJECT_VERSION_STRING_CMAKE "@GIT_VERSION_STRING@"
