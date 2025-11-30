@@ -81,7 +81,7 @@ class Editor {
         if (cx < col_offset) {
             col_offset = cx;
         }
-        // Use cols-1 because the last column is for the cursor position
+        
         if (cx >= col_offset + cols) {
             col_offset = cx - cols + 1;
         }
@@ -211,21 +211,25 @@ class Editor {
                 const string& line = buffer[file_row];
                 int lineno = file_row + 1;
                 // print padded line number + separator
-                cout << std::setw(line_num_width) << "\033[90m" << lineno << "\033[0m ";
+                cout <<"\033[90m" << lineno << "\033[0m ";
 
                 // Print only visible part of text
                 if ((int)line.length() > col_offset) {
                     string visible_part = line.substr(col_offset);
 
-                    if ((int)visible_part.length() > cols - line_num_width - 3)
-                        visible_part = visible_part.substr(0, cols - line_num_width - 3);
+                    if ((int)visible_part.length() > cols - line_num_width - 2)
+                        visible_part = visible_part.substr(0, cols - line_num_width - 2);
+                        // -1 for the space from the line numbering, -1 from the space for the cursor at the end
 
+                    for (int j = 0; j < line_num_width - (int)to_string(i+1).length(); j++){ // i + 1 cuz i is 0-based
+                        cout << " ";
+                    }
                     cout << visible_part;
                 }
                 
             } else if (file_row == (int)buffer.size()) {
                 // Print a tilde for lines past the end of the file
-                cout << "~"; 
+                cout << "\033[90m" << setw(line_num_width+1) << "~" << "\033[0m"; 
             }
 
             cout << "\033[K"; // clear rest of the line

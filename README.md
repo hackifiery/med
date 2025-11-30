@@ -4,6 +4,7 @@ A tiny text editor i wrote cuz others are too bloated imo.
 * Mostly functional, can edit text (obviously)
 * Very lightweight, ~500kb
 * `ncurses`-free
+* Still quite buggy (currently in alpha stage)
 
 # Get the code
 Go to the releases page and download the latest one.
