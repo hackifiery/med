@@ -17,16 +17,16 @@
 #define CTRL_KEY(k) ((k) & 0x1f)
 
 class Editor {
-    bool saved = false;
+    bool saved;
     std::string git_tag;
     int rows, cols;
     struct termios orig_termios;
     std::pair<int, int> screen_dimensions;
     std::vector<std::string> buffer;
-    int cx = 0, cy = 0; // cursor x and y positions
-    int row_offset = 0;
-    int col_offset = 0;
-    int lines = 0;
+    int cx, cy; // cursor x and y positions
+    int row_offset;
+    int col_offset;
+    int lines;
     std::string filename;
     double line_percent;
     std::ifstream in;

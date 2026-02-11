@@ -6,11 +6,11 @@ set(SOURCES
 )
 set(VERSION_HEADER_PATH "${CMAKE_CURRENT_BINARY_DIR}/version.hpp")
 add_executable(${PROJECT_NAME} ${SOURCES})
-
 target_compile_options(${PROJECT_NAME} PRIVATE
     -Wall
     -Wextra
     -pedantic
+    -Werror=c++11-extensions
     -g
 )
 if (GIT_FOUND)

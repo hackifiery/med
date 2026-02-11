@@ -13,9 +13,12 @@
 #include <iomanip>
 #include <algorithm>
 
-Editor::Editor(const std::string& fname) : filename(fname) {
+using namespace std;
+
+Editor::Editor(const string& fname):
+    saved(false), cx(0), cy(0), row_offset(0), col_offset(0), lines(0), filename(fname) {
     {
-        std::ifstream f(filename);
+        ifstream f(filename.c_str());
         if (f) saved = true;
     }
     screen_dimensions = getWindowSize();
@@ -24,9 +27,9 @@ Editor::Editor(const std::string& fname) : filename(fname) {
     tcgetattr(STDIN_FILENO, &orig_termios);
     enableRawMode(orig_termios);
     clearScreen();
-    std::ifstream in(filename);
+    ifstream in(filename.c_str());
     if (in) {
-        std::string line;
+        string line;
         while (getline(in, line)) {
             buffer.push_back(line);
         }
@@ -59,9 +62,9 @@ void Editor::scroll() {
 
 void Editor::saveToFile(){
     saved = true;
-    std::ofstream out(filename);
-    for (std::string line : buffer){
-        out << line << std::endl;
+    ofstream out(filename.c_str());
+    for (size_t i = 0; i < buffer.size(); ++i) {
+        out << buffer[i] << endl;
     }
     out.close();
 }
@@ -94,7 +97,7 @@ void Editor::processKey(char key, bool esc) {
                 cx--;
             }
             else if (cx == 0 && cy > 0){
-                std::string current_line = buffer[cy];
+                string current_line = buffer[cy];
                 buffer.erase(buffer.begin()+cy);
                 cy --;
                 cx = static_cast<int>(buffer[cy].length());
@@ -153,71 +156,79 @@ void Editor::processKey(char key, bool esc) {
 
 void Editor::refreshScreen() {
     lines = buffer.size();
-    line_percent = std::round((100.0 * (cy + 1)) / lines);
+    if (lines > 0) {
+        line_percent = (100.0 * (cy + 1)) / lines;
+        line_percent = (line_percent >= 0.0) ? (int)(line_percent + 0.5) : (int)(line_percent - 0.5);
+    } else {
+        line_percent = 0;
+    }
 
-    int line_num_width = std::to_string(lines).length();
-
-    line_percent = std::round((100.0 * (cy + 1)) / lines);
+    ostringstream tmp_os;
+    tmp_os << lines;
+    int line_num_width = (int)tmp_os.str().length();
     scroll();
-    std::cout << "\033[H\033[J";
+    cout << "\033[H\033[J";
     int lines_to_draw = rows - 1;
 
     for (int i = 0; i < lines_to_draw; i++) {
         int file_row = row_offset + i;
 
         if (file_row < (int)buffer.size()) {
-            const std::string& line = buffer[file_row];
+            const string& line = buffer[file_row];
             int lineno = file_row + 1;
-            std::cout <<"\033[90m" << lineno << "\033[0m ";
+            cout <<"\033[90m" << lineno << "\033[0m ";
 
             if ((int)line.length() > col_offset) {
-                std::string visible_part = line.substr(col_offset);
+                string visible_part = line.substr(col_offset);
 
                 if ((int)visible_part.length() > cols - line_num_width - 2)
                     visible_part = visible_part.substr(0, cols - line_num_width - 2);
 
-                for (int j = 0; j < line_num_width - (int)std::to_string(i+1).length(); j++){
-                    std::cout << " ";
+                ostringstream rownum_os;
+                rownum_os << (i+1);
+                string rownum_str = rownum_os.str();
+                for (int j = 0; j < line_num_width - (int)rownum_str.length(); j++){
+                    cout << " ";
                 }
-                std::cout << visible_part;
+                cout << visible_part;
             }
 
         } else if (file_row == (int)buffer.size()) {
-            std::cout << "\033[90m" << std::setw(line_num_width+1) << "~" << "\033[0m";
+            cout << "\033[90m" << setw(line_num_width+1) << "~" << "\033[0m";
         }
 
-        std::cout << "\033[K";
-        std::cout << "\r\n";
+        cout << "\033[K";
+        cout << "\r\n";
     }
 
-    std::cout << "\033[" << rows << ";1H\033[30;47m";
+    cout << "\033[" << rows << ";1H\033[30;47m";
     for (int i = 0; i < cols; ++i) {
-        std::cout << " ";
+        cout << " ";
     }
-    std::cout << "\033[" << rows << ";1H";
-    std::cout << filename << (saved ? " (saved)" : " (not saved)");
+    cout << "\033[" << rows << ";1H";
+    cout << filename << (saved ? " (saved)" : " (not saved)");
 
-    std::ostringstream status_right;
+    ostringstream status_right;
     status_right << cy + 1 << "," << cx + 1 << " [" << line_percent << "%]";
-    std::string right_text = status_right.str();
-    int right_start_col = std::max(1, cols - (int)right_text.length() + 1);
+    string right_text = status_right.str();
+    int right_start_col = max(1, cols - (int)right_text.length() + 1);
 
-    std::cout << "\033[" << rows << ";" << right_start_col << "H" << right_text;
-    std::cout << "\033[0m";
+    cout << "\033[" << rows << ";" << right_start_col << "H" << right_text;
+    cout << "\033[0m";
 
     int gutter = line_num_width + 1;
 
     int screen_cy = cy - row_offset + 1;
     int screen_cx = (cx - col_offset) + gutter + 1;
 
-    std::cout << "\033[" << screen_cy << ";" << screen_cx << "H";
-    std::cout.flush();
+    cout << "\033[" << screen_cy << ";" << screen_cx << "H";
+    cout.flush();
 }
 
 void Editor::run() {
     while (true) {
         refreshScreen();
-        std::pair<bool, char> rkey = readKey();
+        pair<bool, char> rkey = readKey();
         bool esc = rkey.first;
         char key = rkey.second;
         processKey(key, esc);

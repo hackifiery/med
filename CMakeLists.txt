@@ -2,14 +2,12 @@ cmake_minimum_required(VERSION 3.10)
 
 project(med VERSION 0.5.1 LANGUAGES CXX)
 
-set(CMAKE_CXX_STANDARD 11)
+set(CMAKE_CXX_STANDARD 98)
 set(CMAKE_CXX_STANDARD_REQUIRED True)
 set(CMAKE_LIBRARY_OUTPUT_DIRECTORY ${CMAKE_BINARY_DIR}/lib)
 set(CMAKE_RUNTIME_OUTPUT_DIRECTORY ${CMAKE_BINARY_DIR}/bin)
 set(CMAKE_SOURCE_DIR ${PROJECT_SOURCE_DIR}/src)
 find_package(Git QUIET)
-
-# --- Initialize Default Version ---
 # This ensures GIT_VERSION_STRING is always defined, even if Git is not found.
 set(GIT_VERSION_STRING "${PROJECT_VERSION}-unknown")
 set(PROJECT_VERSION_STRING_FINAL "${PROJECT_VERSION}-unknown")
