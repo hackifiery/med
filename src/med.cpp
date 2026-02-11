@@ -4,6 +4,7 @@
 */
 
 #include <iostream>
+#include <sys/stat.h>
 #include "editor.hpp"
 #include "version.hpp"
 
@@ -17,10 +18,10 @@ int main(int argc, char* argv[]) {
     }
     
     else if (argc == 2){
-        if (filesystem::is_directory(".git")){
+        struct stat st;
+        if (stat(".git", &st) == 0 && S_ISDIR(st.st_mode)){
             git_tag = PROJECT_VERSION_STRING_CMAKE;
-        }
-        else {
+        } else {
             git_tag = PROJECT_VERSION_STRING_GIT;
         }
         if (string(argv[1]) == "--version" || string(argv[1]) == "-v"){

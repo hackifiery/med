@@ -1,5 +1,6 @@
 set(SOURCES
     keyboard.cpp
+    editor.cpp
     med.cpp
     terminal.cpp
 )
