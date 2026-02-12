@@ -6,7 +6,12 @@
 #include <iostream>
 #include <sys/stat.h>
 #include "editor.hpp"
+#if defined(PROJECT_VERSION_STRING_CMAKE) && defined(PROJECT_VERSION_STRING_GIT)
 #include "version.hpp"
+#else
+#define PROJECT_VERSION_STRING_GIT "unknown"
+#define PROJECT_VERSION_STRING_CMAKE "unknown"
+#endif
 
 using namespace std;
 string git_tag;

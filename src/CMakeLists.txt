@@ -10,8 +10,7 @@ target_compile_options(${PROJECT_NAME} PRIVATE
     -Wall
     -Wextra
     -pedantic
-    -Werror=c++11-extensions
-    -g
+	-g
 )
 if (GIT_FOUND)
     # building from repo

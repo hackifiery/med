@@ -17,6 +17,8 @@
 #define CTRL_KEY(k) ((k) & 0x1f)
 
 class Editor {
+private:
+public:
     bool saved;
     std::string git_tag;
     int rows, cols;
@@ -30,8 +32,7 @@ class Editor {
     std::string filename;
     double line_percent;
     std::ifstream in;
-
-    public:
+	
     Editor(const std::string& fname);
     ~Editor();
 
