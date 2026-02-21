@@ -66,3 +66,4 @@ Makefile
 /med
 
 /.cache
+/*.xcodeproj
